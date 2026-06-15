@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)file:///C:/Users/fiore/Downloads/index_9.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Recetario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./Mi Recetario_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --bg: #FFFFFF;
+    --ink: #2D2420;
+    --muted: #8C7B6B;
+    --line: rgba(45,36,32,0.12);
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header.top {
+    background: var(--paper);
+    border-bottom: 3px solid var(--ink);
+    padding: 2.5rem 1.5rem 1.75rem;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: 'Nunito Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin: 0 0 0.5rem;
+  }
+
+  header.top h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.25rem, 8vw, 3.75rem);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .byline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--muted);
+    margin: 0.4rem 0 0;
+  }
+
+  .count {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.6rem 0 0;
+  }
+
+  .controls {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    z-index: 5;
+    border-bottom: 1px solid var(--line);
+  }
+
+  #search {
+    flex: 1 1 220px;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.9rem;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  #search:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .chip {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 2px solid var(--chip-color, var(--ink));
+    background: transparent;
+    color: var(--chip-color, var(--ink));
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .chip.active {
+    background: var(--chip-color, var(--ink));
+    color: var(--paper);
+  }
+  .chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    padding-left: 6px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(45,36,32,0.05);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: cardIn 0.5s ease forwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: var(--cat-color);
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(45,36,32,0.12);
+  }
+  .card:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .card-photo {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 22%, var(--paper)), color-mix(in srgb, var(--cat-color) 55%, var(--paper)));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .card:hover .card-photo img { transform: scale(1.06); }
+
+  .stamp {
+    position: absolute; top: 0.6rem; right: 0.6rem;
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    background: var(--cat-color);
+    border: 2px dashed var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.6rem; font-weight: 700; color: var(--paper);
+    text-align: center; line-height: 1;
+    transition: transform 0.25s ease;
+  }
+  .card:hover .stamp { transform: rotate(-8deg) scale(1.08); }
+
+  .card-body { padding: 0.9rem 1rem 1.1rem; }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+  }
+
+  .card-meta {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .diff-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 700;
+    color: var(--paper);
+    background: var(--diff-color, var(--muted));
+  }
+
+  .empty {
+    text-align: center;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--muted);
+    padding: 3rem 1rem;
+  }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(45,36,32,0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 20;
+  }
+  .overlay.active { opacity: 1; visibility: visible; }
+
+  .modal {
+    background: var(--paper);
+    border-radius: 10px;
+    max-width: 760px; width: 100%;
+    max-height: 88vh; overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+    border-left: 8px solid var(--cat-color, var(--ink));
+    transform: scale(0.94) translateY(16px);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .overlay.active .modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .modal-close {
+    position: absolute; top: 0.8rem; right: 0.8rem;
+    width: 2.2rem; height: 2.2rem; border-radius: 50%;
+    border: 2px solid var(--ink); background: transparent;
+    font-size: 1.1rem; line-height: 1; cursor: pointer; color: var(--ink);
+  }
+  .modal-close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  .modal h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    margin: 0 0 0.5rem; padding-right: 2.5rem;
+  }
+
+  .modal-meta {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.8rem; color: var(--muted);
+    display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem;
+  }
+
+  .modal-photo {
+    width: 100%; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 22%, var(--paper)), color-mix(in srgb, var(--cat-color) 55%, var(--paper)));
+    display: flex; align-items: center; justify-content: center; font-size: 4rem;
+  }
+  .modal-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .modal-columns {
+    display: grid; gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .modal-columns { grid-template-columns: 1fr 1.4fr; }
+  }
+
+  .tips-box {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--cat-color) 12%, var(--paper));
+    border-left: 4px solid var(--cat-color);
+  }
+  .tips-box ul {
+    margin: 0; padding-left: 1.1rem;
+  }
+  .tips-box li {
+    font-size: 0.92rem; line-height: 1.5; margin-bottom: 0.4rem;
+  }
+  .tips-box li:last-child { margin-bottom: 0; }
+
+  .modal h3 {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.75rem;
+    color: var(--muted); margin: 0 0 0.6rem;
+  }
+
+  .ing-list { list-style: none; margin: 0; padding: 0; }
+  .ing-list li {
+    padding: 0.35rem 0; border-bottom: 1px solid var(--line);
+    font-size: 0.92rem;
+  }
+  .ing-list li:last-child { border-bottom: none; }
+  .ing-list li.ing-section {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    border-bottom: none;
+    color: var(--cat-color, var(--ink));
+    padding: 0.7rem 0 0.2rem;
+  }
+  .ing-list li.ing-section:first-child { padding-top: 0; }
+
+  .steps-list { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+  .steps-list li {
+    counter-increment: step;
+    display: flex; gap: 0.75rem; margin-bottom: 0.9rem; font-size: 0.95rem; line-height: 1.5;
+  }
+  .steps-list li::before {
+    content: counter(step);
+    font-family: 'Nunito Sans', sans-serif; font-weight: 700;
+    flex-shrink: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: var(--cat-color, var(--ink)); color: var(--paper);
+    display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+  }
+
+  footer {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.78rem; color: var(--muted);
+    padding: 2rem 1.5rem 3rem; max-width: 700px; margin: 0 auto; text-align: center;
+    line-height: 1.6;
+  }
+  footer code { background: rgba(45,36,32,0.06); padding: 0.1rem 0.35rem; border-radius: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    .card { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Recetario personal</p>
+  <h1>Mi Recetario</h1>
+  <p class="byline">by Fiorela Triveño</p>
+  <p class="count"><span id="count">16</span> recetas guardadas</p>
+</header>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Buscar por nombre o ingrediente...">
+  <div class="filters" id="filters"><button class="chip active">Todas</button><button class="chip" style="--chip-color: #D9822B;">Sopa</button><button class="chip" style="--chip-color: #748E45;">Fondo</button><button class="chip" style="--chip-color: #4F8FA8;">Desayuno</button><button class="chip" style="--chip-color: #C0392B;">Entrada</button><button class="chip" style="--chip-color: #E0A52E;">Postre</button><button class="chip" style="--chip-color: #8B2E2E;">Salsa</button><button class="chip" style="--chip-color: #C9A66B;">Masas</button></div>
+</div>
+
+<main class="grid" id="grid"><article class="card" tabindex="0" style="--cat-color: #748E45; --i: 0;">
+        <div class="card-photo">
+          🍗
+          <span class="stamp">FON</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Ají de Gallina</h3>
+          <div class="card-meta">
+            <span>⏱ 60 min</span>
+            <span>🍽 8 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #E0A52E; --i: 1;">
+        <div class="card-photo">
+          🍩
+          <span class="stamp">POS</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Calzones Rotos</h3>
+          <div class="card-meta">
+            <span>⏱ 60 min</span>
+            <span>🍽 25 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #D9822B; --i: 2;">
+        <div class="card-photo">
+          🌽
+          <span class="stamp">SOP</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Crema de Choclo con Olluco</h3>
+          <div class="card-meta">
+            <span>⏱ 45 min</span>
+            <span>🍽 2 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #C0392B; --i: 3;">
+        <div class="card-photo">
+          🥟
+          <span class="stamp">ENT</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Empanadas Fritas Chilenas</h3>
+          <div class="card-meta">
+            <span>⏱ 3 horas</span>
+            <span>🍽 30 porciones</span>
+            <span class="diff-badge" style="--diff-color:#C0392B">Alta</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #C0392B; --i: 4;">
+        <div class="card-photo">
+          🥗
+          <span class="stamp">ENT</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Ensalada César con Chicken Bites Caseros</h3>
+          <div class="card-meta">
+            <span>⏱ 35 min</span>
+            <span>🍽 4 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #748E45; --i: 5;">
+        <div class="card-photo">
+          🫘
+          <span class="stamp">FON</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Frejoles</h3>
+          <div class="card-meta">
+            <span>⏱ 45 min</span>
+            <span>🍽 6 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #4F8FA8; --i: 6;">
+        <div class="card-photo">
+          🍳
+          <span class="stamp">DES</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Huevos con Tomate</h3>
+          <div class="card-meta">
+            <span>⏱ 15 min</span>
+            <span>🍽 2 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #D9822B; --i: 7;">
+        <div class="card-photo">
+          <img src="file:///C:/Users/fiore/Downloads/images/huevos-escalfados.jpg" alt="Huevos Escalfados">
+          <span class="stamp">SOP</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Huevos Escalfados</h3>
+          <div class="card-meta">
+            <span>⏱ 30 min</span>
+            <span>🍽 4 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #C9A66B; --i: 8;">
+        <div class="card-photo">
+          🍕
+          <span class="stamp">MAS</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Masa de Pizza Casera</h3>
+          <div class="card-meta">
+            <span>⏱ 45 min</span>
+            <span>🍽 2 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #4F8FA8; --i: 9;">
+        <div class="card-photo">
+          🥞
+          <span class="stamp">DES</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Panqueques esponjosos</h3>
+          <div class="card-meta">
+            <span>⏱ 20 min</span>
+            <span>🍽 4 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #748E45; --i: 10;">
+        <div class="card-photo">
+          🌾
+          <span class="stamp">FON</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Picante de Trigo</h3>
+          <div class="card-meta">
+            <span>⏱ 50 min</span>
+            <span>🍽 6 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #748E45; --i: 11;">
+        <div class="card-photo">
+          <img src="file:///C:/Users/fiore/Downloads/images/quiche-espinaca.jpg" alt="Quiche de Espinaca">
+          <span class="stamp">FON</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Quiche de Espinaca</h3>
+          <div class="card-meta">
+            <span>⏱ 1 h 20 min</span>
+            <span>🍽 8 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #E0A52E; --i: 12;">
+        <div class="card-photo">
+          <img src="file:///C:/Users/fiore/Downloads/images/rollos-canela.jpg" alt="Rollos de Canela">
+          <span class="stamp">POS</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Rollos de Canela</h3>
+          <div class="card-meta">
+            <span>⏱ 3 horas</span>
+            <span>🍽 20 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #D9822B; --i: 13;">
+        <div class="card-photo">
+          <img src="file:///C:/Users/fiore/Downloads/images/sopa-criolla.jpg" alt="Sopa Criolla">
+          <span class="stamp">SOP</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sopa Criolla</h3>
+          <div class="card-meta">
+            <span>⏱ 35 min</span>
+            <span>🍽 4 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #D9822B; --i: 14;">
+        <div class="card-photo">
+          🥔
+          <span class="stamp">SOP</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Sopa de Papas Anita</h3>
+          <div class="card-meta">
+            <span>⏱ 35 min</span>
+            <span>🍽 4 porciones</span>
+            <span class="diff-badge" style="--diff-color:#748E45">Fácil</span>
+          </div>
+        </div>
+      </article><article class="card" tabindex="0" style="--cat-color: #8B2E2E; --i: 15;">
+        <div class="card-photo">
+          🍅
+          <span class="stamp">SAL</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Tuco Casero</h3>
+          <div class="card-meta">
+            <span>⏱ 2 horas 30 min</span>
+            <span>🍽 10 porciones</span>
+            <span class="diff-badge" style="--diff-color:#E0A52E">Media</span>
+          </div>
+        </div>
+      </article></main>
+<p class="empty" id="empty" hidden="">No encontré recetas con esa búsqueda.</p>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal" style="--cat-color: #C0392B;">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+    <div id="modal-content">
+      <div class="modal-photo">🧀</div>
+      <h2>Papa a la Huancaína</h2>
+      <div class="modal-meta">
+        <span>⏱ 30 min</span>
+        <span>🍽 4 porciones</span>
+        <span>🏷 Entrada</span>
+        
+      </div>
+      <div class="modal-columns">
+        <div>
+          <h3>Ingredientes</h3>
+          <ul class="ing-list"><li>6 papas amarillas medianas</li><li>200 g de queso fresco</li><li>3 ajíes amarillos</li><li>1/2 taza de leche</li><li>4 galletas de soda</li><li>Aceite vegetal</li><li>Hojas de lechuga</li><li>2 huevos sancochados y aceitunas para decorar</li></ul>
+        </div>
+        <div>
+          <h3>Preparación</h3>
+          <ol class="steps-list"><li>Sancocha las papas con cáscara hasta que estén suaves, pélalas y déjalas enfriar.</li><li>Sofríe los ajíes en un poco de aceite y lícualos con el queso, la leche y las galletas hasta lograr una crema espesa.</li><li>Sazona la crema con sal al gusto.</li><li>Sirve las papas en rodajas sobre una cama de lechuga y baña con la crema.</li><li>Decora con huevo sancochado y aceitunas.</li></ol>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<footer>
+  💡 Para agregar una receta nueva, copia el bloque de ejemplo dentro del array <code>recetas</code> (sección JavaScript, al final del archivo) y completa tus datos.
+  Para fotos: crea una carpeta llamada <code>images</code> junto a este archivo, guarda ahí tus fotos y escribe el nombre del archivo en el campo <code>imagen</code> (ej: "images/causa.jpg"). Mientras no tengas foto, se muestra un emoji de referencia.
+</footer>
+
+<script>
+  const CATEGORY_COLORS = {
+    "Entrada": "#C0392B",
+    "Fondo": "#748E45",
+    "Postre": "#E0A52E",
+    "Bebida": "#6B4E8E",
+    "Sopa": "#D9822B",
+    "Plato de Fondo": "#748E45",
+    "Desayuno": "#4F8FA8",
+    "Salsa": "#8B2E2E",
+    "Masas": "#C9A66B"
+  };
+
+  const DIFFICULTY_COLORS = {
+    "facil": "#748E45",
+    "media": "#E0A52E",
+    "medio": "#E0A52E",
+    "dificil": "#C0392B",
+    "alta": "#C0392B"
+  };
+
+  function difficultyColor(dif) {
+    const key = dif.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return DIFFICULTY_COLORS[key] || '#8C7B6B';
+  }
+
+  /* ============================================================
+     CÓMO AGREGAR UNA RECETA NUEVA
+     Copia este bloque dentro del array "recetas" de abajo (separado
+     por una coma del anterior) y completa tus datos:
+
+     {
+       nombre: "Nombre de la receta",
+       categoria: "Entrada",   // Entrada | Fondo | Postre | Bebida (o crea una nueva categoría)
+       tiempo: "30 min",
+       porciones: 4,
+       dificultad: "Fácil",    // Fácil | Media | Difícil
+       emoji: "🍲",            // se muestra mientras no tengas foto
+       imagen: "",             // ej: "images/mi-receta.jpg"
+       ingredientes: ["...", "..."],
+       pasos: ["...", "..."],
+       consejos: ["...", "..."]  // opcional, se muestra como recuadro de tips
+     }
+
+     Si creas una categoría nueva, agrégala también arriba en
+     CATEGORY_COLORS con un color en formato hex.
+  ============================================================ */
+
+  const recetas = [
+{
+  nombre: "Sopa Criolla",
+  categoria: "Sopa",
+  tiempo: "35 min",
+  dificultad: "Fácil",
+  porciones: 4,
+  emoji: "🍲",
+  imagen: "images/sopa-criolla.jpg",
+  ingredientes: [
+    "250 g carne picada",
+    "1 cebolla mediana (en cuadraditos)",
+    "1 tomate rallado (sin cáscara)",
+    "1 caldo de carne Maggi (opcional)",
+    "1 cdita de ají panca",
+    "150 g de fideo 'Cabello de ángel'",
+    "4 Huevos (1 por persona)",
+    "2 dientes de ajo (picados)",
+    "1 cda Sal",
+    "Pimienta al gusto",
+    "Comino al gusto",
+    "1 cda Orégano seco",
+    "1/4 tza de Leche evaporada"
+  ],
+  pasos: [
+    "Prepara el aderezo friendo cebolla, ajo, pimienta, comino y sal.",
+    "Añade el ají panca (si no tienes puedes reemplazarlo por pimentón).",
+    "Agrega la carne picada y el tomate rallado, mezclando bien.",
+    "Deja que la carne suelte sus jugos y se cocine por unos minutos junto con el orégano.",
+    "Añade el cubito de caldo de carne (si deseas usarlo).",
+    "Incorpora agua hervida y deja cocinar hasta que vuelva a hervir.",
+    "Agrega el cabello de ángel partido en trozos pequeños y cocina hasta que esté suave.",
+    "Al finalizar, añade un chorro de leche evaporada y mezcla suavemente.",
+    "Sirve decorando con huevo frito o escalfado y acompaña con pan."
+  ],
+  consejos: [
+  "Usa carne de res con poco contenido de grasa para tener un caldo más ligero.",
+  "No agregues la leche evaporada mientras la sopa hierva intensamente para evitar que se corte.",
+  "Puedes reemplazar la carne picada por carne molida"
+],
+},
+    {
+nombre: "Ají de Gallina",
+categoria: "Fondo",
+tiempo: "60 min",
+dificultad: "Media",
+porciones: 8,
+emoji: "🍗",
+imagen: "",
+ingredientes: [
+"2 ramas de apio",
+"3 dientes de ajo picados",
+"1 cebolla mediana picada",
+"5 ajíes amarillos licuados",
+"2 pechugas de pollo",
+"2 cubos de caldo de gallina",
+"10 papas amarillas o huayro",
+"2 panes franceses",
+"2 paquetes de galleta soda",
+"1 tarro de leche evaporada",
+"4 huevos duros (para decorar)",
+"8 aceitunas (para decorar)",
+"2 tazas de caldo de pollo colado",
+"1 puñado de pecanas",
+"Ajinomoto al gusto",
+"Palillo amarillo al gusto",
+"Orégano al gusto",
+"Sal al gusto"
+],
+pasos: [
+"Hierve las pechugas de pollo junto con el apio, ajo, orégano y una pizca de sal hasta que estén cocidas.",
+"Retira el pollo, deja enfriar y deshiláchalo. Reserva el caldo y cuélalo.",
+"Remoja el pan francés y las galletas soda en la leche evaporada hasta que se ablanden.",
+"Licúa el pan remojado junto con las pecanas y 2 tazas del caldo de pollo colado hasta obtener una mezcla homogénea.",
+"En una olla con aceite caliente sofríe la cebolla y agrega el ají amarillo licuado.",
+"Añade los cubos de caldo de gallina y el palillo amarillo. Cocina aproximadamente 10 minutos.",
+"Agrega rápidamente el licuado de pan y no dejes de mover para evitar que se formen grumos o se pegue.",
+"Cuando la preparación empiece a espesar, agrega poco a poco más caldo de pollo si fuera necesario para ajustar la textura.",
+"Lleva nuevamente a hervor suave y agrega el pollo deshilachado.",
+"Rectifica la sazón y recién al final añade la sal si fuera necesario.",
+"Agrega una pizca de ajinomoto al final y mezcla bien.",
+"Sirve acompañado de papa amarilla sancochada."
+],
+consejos: [
+"No agregues sal al inicio de la preparación del ají de gallina, ya que el caldo de pollo ya contiene sal.",
+"Añade el caldo poco a poco para controlar la consistencia de la crema.",
+"No dejes de mover la preparación después de agregar el licuado de pan porque espesa rápidamente.",
+"Las pecanas aportan una textura más cremosa y un sabor tradicional al plato."
+],
+},
+    {
+nombre: "Huevos Escalfados",
+categoria: "Sopa",
+tiempo: "30 min",
+dificultad: "Fácil",
+porciones: 4,
+emoji: "🥚",
+imagen: "images/huevos-escalfados.jpg",
+ingredientes: [
+"1 cebolla mediana",
+"1 tomate mediano rallado",
+"2 dientes de ajo (picados)",
+"1 tarro de leche evaporada Gloria",
+"1 tarro de agua (usar la misma medida del tarro de leche)",
+"1 cda de huacatay picado",
+"4 huevos (1 por persona)",
+"1 pizca de Muña",
+"150 g de fideos cabello de ángel",
+"4 papas amarillas medianas",
+"1 cda de Sal",
+"Ajinomoto al gusto",
+"Pimienta al gusto",
+"Comino al gusto"
+],
+pasos: [
+"Dora la cebolla con el tomate, el ajo, la sal, la pimienta y el comino en una olla con un poco de aceite y sofríe hasta que la cebolla esté transparente ",
+"Agrega el tarro de leche evaporada y la misma cantidad de agua.",
+"Añade el huacatay picado y una pizca de ajinomoto.",
+"Cuando la preparación esté caliente (pero sin hervir fuertemente), coloca el fuego en mínimo y agrega los huevos de manera espaciada.",
+"Tapa la olla y deja que los huevos se cocinen lentamente.",
+"Agrega el cabello de ángel partido en trozos pequeños y cocina hasta que esté listo.",
+"Añade la muña y tapa nuevamente por unos minutos para que suelte su aroma.",
+"Prueba la sal y rectifica la sazón si es necesario.",
+"Sirve caliente acompañado de papa amarilla sancochada."
+],
+consejos: [
+"No dejes que la sopa hierva intensamente al agregar la leche para que no se corte.",
+"La muña debe agregarse al final para conservar mejor su aroma no excederse con la muña.",
+"Puedes servir la papa amarilla dentro del plato o como acompañamiento.",
+"Utiliza leche evaporada de tarro para obtener una textura más cremosa."
+],
+},
+    {
+nombre: "Huevos con Tomate",
+categoria: "Desayuno",
+tiempo: "15 min",
+dificultad: "Fácil",
+porciones: 2,
+emoji: "🍳",
+imagen: "",
+ingredientes: [
+"½ cucharadita de mantequilla",
+"½ cucharadita de ajo molido",
+"1 tomate mediano picado en cubitos",
+"½ cebolla blanca picada",
+"1 cda de pasta de tomate",
+"1 cda de azúcar",
+"4 huevos",
+"¼ taza de agua",
+"Sal al gusto",
+"Pimienta al gusto",
+"Orégano al gusto",
+"½ taza de queso mozzarella rallado"
+],
+pasos: [
+"Coloca la mantequilla en una sartén y sofríe ligeramente el ajo molido.",
+"Agrega el tomate picado y la cebolla blanca. Cocina unos minutos hasta que empiecen a ablandarse.",
+"Añade la pasta de tomate, el azúcar y el agua. Mezcla bien.",
+"Incorpora la sal, la pimienta y el orégano al gusto.",
+"Cuando la salsa haya reducido un poco, agrega los huevos directamente sobre la preparación.",
+"Tapa la sartén y cocina a fuego bajo hasta que los huevos alcancen el punto deseado.",
+"Agrega el queso mozzarella rallado por encima.",
+"Tapa nuevamente durante unos minutos hasta que el queso se derrita.",
+"Sirve caliente acompañado de una tostada."
+],
+consejos: [
+"Utiliza fuego bajo al cocinar los huevos para que queden suaves y cremosos.",
+"El azúcar ayuda a equilibrar la acidez del tomate.",
+"Puedes agregar ají en hojuelas si deseas un toque picante.",
+"Acompaña con pan tostado o pan de masa madre para aprovechar la salsa."
+],
+},
+{
+  nombre: "Frejoles",
+  categoria: "Fondo",
+  tiempo: "45 min",
+  dificultad: "Fácil",
+  porciones: 6,
+  emoji: "🫘",
+  imagen: "",
+  ingredientes: [
+    "1 kg de frejol canario",
+    "250 g de chancho o tocino",
+    "1 cebolla picada en cuadraditos",
+    "3 dientes de ajo picados",
+    "Sal al gusto",
+    "Pimienta al gusto",
+    "Comino al gusto"
+  ],
+  pasos: [
+    "Lava los frejoles frotándolos con las manos hasta que el agua salga transparente.",
+    "Déjalos remojando desde la noche anterior en agua con sal.",
+    "Al día siguiente, desecha el agua del remojo y vuelve a enjuagar los frejoles.",
+    "Coloca los frejoles en una olla a presión y agrega agua hasta cubrirlos aproximadamente dos dedos por encima.",
+    "Añade el chancho y cocina a fuego fuerte hasta que la olla empiece a sonar.",
+    "Una vez que la olla alcance presión, cocina durante 30 minutos y luego apaga el fuego.",
+    "Deja enfriar la olla antes de abrirla.",
+    "Licúa una pequeña porción de los frejoles cocidos y reserva.",
+    "En una sartén sofríe la cebolla, el ajo, la sal, la pimienta y el comino junto con el chancho cortado en trozos.",
+    "Agrega este aderezo a la olla de frejoles y mezcla bien.",
+    "Incorpora los frejoles licuados para dar más cremosidad.",
+    "Prueba la sazón, rectifica la sal si es necesario y sirve."
+  ],
+  consejos: [
+    "El remojo de toda la noche ayuda a que los frejoles cocinen más rápido y queden más suaves.",
+    "Licuar una pequeña parte de los frejoles permite obtener una textura más cremosa sin necesidad de espesantes.",
+    "Puedes acompañarlos con salsa criolla y pescado frito, tal como indica la receta original.",
+    "Si utilizas olla convencional, el tiempo de cocción será considerablemente mayor."
+  ]
+},
+{
+  nombre: "Picante de Trigo",
+  categoria: "Fondo",
+  tiempo: "50 min",
+  dificultad: "Media",
+  porciones: 6,
+  emoji: "🌾",
+  imagen: "",
+  ingredientes: [
+    "500 g de trigo",
+    "1 cebolla mediana picada",
+    "3 a 4 ajíes amarillos licuados",
+    "3 dientes de ajo picados",
+    "Pimienta al gusto",
+    "Comino al gusto",
+    "Palillo al gusto",
+    "1 taza de leche evaporada",
+    "200 g de queso fresco",
+    "1 huevo",
+    "1 cucharada de huacatay picado",
+    "1 pizca de muña",
+    "Sal al gusto",
+    "Ajinomoto al gusto"
+  ],
+  pasos: [
+    "Coloca el trigo en un recipiente y lávalo frotándolo con las manos.",
+    "Enjuaga varias veces hasta que el agua salga limpia.",
+    "Cocina el trigo en una olla con agua hasta cubrir aproximadamente cuatro dedos por encima del nivel del trigo.",
+    "Hierve hasta que el trigo reviente y esté suave.",
+    "Prepara un aderezo con ajo, cebolla, pimienta, comino, palillo y ají amarillo licuado.",
+    "Agrega el aderezo al trigo cocido y mezcla bien.",
+    "Incorpora la leche evaporada y el queso desmenuzado.",
+    "Añade el huevo batido y mezcla constantemente para integrarlo a la preparación.",
+    "Agrega el huacatay, la muña y la sal al gusto.",
+    "Rectifica la sazón y añade ajinomoto si deseas.",
+    "Sirve caliente."
+  ],
+  consejos: [
+    "Lava bien el trigo antes de cocinarlo para eliminar impurezas.",
+    "El trigo debe cocinarse hasta que reviente para lograr la textura tradicional del plato.",
+    "Agrega la muña al final para conservar mejor su aroma.",
+    "Puedes acompañarlo con queso fresco adicional o salsa criolla."
+  ]
+},
+{
+  nombre: "Quiche de Espinaca",
+  categoria: "Fondo",
+  tiempo: "1 h 20 min",
+  dificultad: "Media",
+  porciones: 8,
+  emoji: "🥬",
+  imagen: "images/quiche-espinaca.jpg",
+  ingredientes: [
+    "Para la masa:",
+    "300 g de harina",
+    "200 g de margarina",
+    "1 yema",
+    "1 pizca de sal",
+    "65 ml de leche fresca",
+    "Para el relleno:",
+    "25 g de mantequilla",
+    "1 diente de ajo picado",
+    "1 cebolla blanca grande picada",
+    "1 atado grande de espinaca",
+    "1/4 taza de leche evaporada",
+    "3 tomates picados",
+    "250 g de queso fresco",
+    "3 huevos",
+    "Sal",
+    "Pimienta",
+    "Nuez moscada",
+    "Queso parmesano rallado"
+  ],
+  pasos: [
+    "Colocar la harina en un recipiente y agregar la margarina en cubos.",
+    "Trabajar con las manos hasta obtener una textura arenosa.",
+    "Agregar la yema, la sal y la leche fresca.",
+    "Mezclar hasta formar una masa uniforme sin amasar en exceso.",
+    "Cubrir y refrigerar durante 30 minutos.",
+    "Estirar la masa y forrar un molde para quiche, cubriendo base y bordes.",
+    "Pinchar la base con un tenedor y reservar.",
+    "Derretir la mantequilla en una sartén.",
+    "Sofreír la cebolla y el ajo hasta que estén transparentes.",
+    "Agregar la espinaca picada y cocinar hasta que reduzca su volumen.",
+    "Retirar del fuego y dejar enfriar.",
+    "Batir los huevos con la leche evaporada.",
+    "Añadir el queso fresco, los tomates picados y la espinaca cocida.",
+    "Sazonar con sal, pimienta y nuez moscada.",
+    "Verter la preparación sobre la base de masa.",
+    "Espolvorear queso parmesano rallado.",
+    "Hornear a 180°C durante 35 a 45 minutos, hasta que el relleno esté firme y dorado.",
+    "Dejar reposar unos minutos antes de desmoldar y servir."
+  ],
+  consejos: [
+    "Blanquear la espinaca antes de usarla: sumergirla unos segundos en agua hirviendo y luego pasarla a agua fría para conservar el color verde intenso.",
+    "Escurrir muy bien la espinaca después del blanqueado para evitar que el relleno quede aguado.",
+    "No amasar demasiado la masa para que quede más crocante y quebradiza.",
+    "Refrigerar la masa antes de estirarla para que mantenga mejor su forma durante el horneado.",
+    "Dejar enfriar el relleno antes de mezclarlo con los huevos para evitar que estos se cocinen prematuramente.",
+    "Hornear hasta que el centro esté firme pero aún ligeramente húmedo para que la quiche no quede seca."
+  ]
+},
+{
+  nombre: "Crema de Choclo con Olluco",
+  categoria: "Sopa",
+  tiempo: "45 min",
+  dificultad: "Media",
+  porciones: 2,
+  emoji: "🌽",
+  imagen: "",
+  ingredientes: [
+    "250 g de olluco con cáscara",
+    "1 cebolla mediana picada",
+    "2 dientes de ajo picados",
+    "1 pizca de sal",
+    "Pimienta",
+    "Comino",
+    "1 papa yungay grande",
+    "1 taza de habas peladas",
+    "Queso fresco rallado al gusto",
+    "5 huevos",
+    "2 choclos grandes",
+    "1 rama de huacatay",
+    "1 pizca de muña (opcional)",
+    "Leche evaporada (opcional)",
+    "Agua caliente"
+  ],
+  pasos: [
+    "Picar el olluco con cáscara en tiras o cubos pequeños. Mezclar con una pizca de sal y lavarlo bien para eliminar el sabor amargo y el olor fuerte característico.",
+    "Preparar un aderezo con cebolla, ajo, pimienta y comino. Agregar el olluco lavado y cocinar unos minutos hasta que sude y tome sabor.",
+    "Añadir aproximadamente 3 dedos de agua caliente y la papa yungay pelada, cortada en tres trozos grandes. Sazonar con sal al gusto.",
+    "Incorporar huacatay picado y cocinar hasta que la papa y el olluco estén tiernos.",
+    "Agregar las habas peladas y continuar la cocción unos minutos más.",
+    "Añadir el queso fresco rallado.",
+    "Romper los huevos directamente sobre la sopa, dejándolos cocinar como huevos escalfados. Cuando estén cocidos, remover suavemente.",
+    "Licuar los choclos desgranados con agua y unas hojas de huacatay. Colar la mezcla para obtener una crema fina.",
+    "Agregar poco a poco la crema de choclo colada a la sopa, removiendo lentamente y de forma constante para evitar que se corte o quede aguada.",
+    "Si la preparación espesa demasiado, añadir pequeñas cantidades de agua caliente hasta obtener una consistencia cremosa.",
+    "Incorporar un chorrito de leche evaporada si se desea una textura más suave.",
+    "Añadir una pizca de muña al final (opcional), rectificar la sal y servir caliente."
+  ],
+  consejos: [
+    "El olluco debe lavarse con sal después de picarlo para quitarle el amargor.",
+    "El mejor choclo para esta receta es el que está un poco más duro, no demasiado tierno, porque aporta más almidón y espesa mejor la sopa.",
+    "La crema de choclo siempre se agrega al final.",
+    "Hay que mover lentamente; si se bate demasiado, la preparación puede quedar aguada en lugar de cremosa.",
+    "El resultado debe quedar espeso, tipo crema, no una sopa líquida. 🍲🌽"
+  ]
+},
+{
+  nombre: "Panqueques esponjosos",
+  categoria: "Desayuno",
+  tiempo: "20 min",
+  dificultad: "Fácil",
+  porciones: 4,
+  emoji: "🥞",
+  imagen: "",
+  ingredientes: [
+    "1 huevo",
+    "¼ taza de azúcar",
+    "1 cucharadita de vainilla o canela en polvo",
+    "1 taza de leche entera",
+    "3 cucharadas de mantequilla derretida (42 g aprox.)",
+    "1 taza de harina sin preparar",
+    "3 cucharaditas de polvo de hornear",
+    "½ cucharadita de sal"
+  ],
+  pasos: [
+    "En un bowl, bate el huevo junto con el azúcar.",
+    "Agrega la vainilla y la leche, mezclando bien.",
+    "Incorpora la mantequilla derretida.",
+    "Añade la harina, el polvo de hornear y la sal.",
+    "Mezcla solo hasta integrar los ingredientes; no batas en exceso.",
+    "Deja reposar la masa entre 5 y 10 minutos.",
+    "Calienta una sartén antiadherente a fuego medio-bajo.",
+    "Vierte porciones de masa formando círculos.",
+    "Cuando aparezcan burbujas en la superficie, voltea los pancakes.",
+    "Cocina el otro lado hasta que estén dorados.",
+    "Sirve con mantequilla, miel, maple syrup, frutas o el acompañamiento de tu preferencia."
+  ],
+  consejos: [
+    "No sobremezcles la masa; algunos grumos pequeños ayudarán a que los pancakes queden más esponjosos.",
+    "Dejar reposar la mezcla unos minutos permite que el polvo de hornear actúe mejor.",
+    "Si deseas pancakes más altos y aireados, separa la clara de la yema, bate la clara a punto de nieve e incorpórala al final con movimientos envolventes.",
+    "Cocina siempre a fuego medio-bajo para que se cocinen por dentro sin quemarse por fuera."
+  ]
+},
+{
+  nombre: "Ensalada César con Chicken Bites Caseros",
+  categoria: "Entrada",
+  tiempo: "35 min",
+  dificultad: "Fácil",
+  porciones: 4,
+  emoji: "🥗",
+  imagen: "",
+  ingredientes: [
+    "200 g de lechuga romana",
+    "30 g de queso parmesano en láminas",
+    "100 g de croutons",
+    "Para los Chicken Bites:",
+    "300 g de pechuga de pollo en cubos",
+    "1 huevo",
+    "½ taza de harina",
+    "1 taza de panko o pan rallado",
+    "1 cucharadita de ajo en polvo",
+    "½ cucharadita de paprika",
+    "Sal al gusto",
+    "Pimienta al gusto",
+    "1 cucharada de aceite de oliva",
+    "Para el aliño César:",
+    "½ taza de mayonesa light",
+    "Jugo de 1 limón",
+    "1 cucharada de mostaza Dijon",
+    "1 chorrito de salsa inglesa",
+    "Pimienta molida al gusto",
+    "½ diente de ajo rallado",
+    "2 cucharadas de queso parmesano rallado"
+  ],
+  pasos: [
+    "Corta la pechuga de pollo en cubos pequeños y sazónala con sal, pimienta, ajo en polvo y paprika.",
+    "Pasa los cubos de pollo por harina, luego por huevo batido y finalmente por panko o pan rallado.",
+    "Rocía ligeramente con aceite de oliva y cocina en air fryer a 180°C durante 12 minutos, volteando a mitad de cocción. También puedes freírlos u hornearlos.",
+    "Corta el pan en cubitos para los croutons, mézclalos con un poco de aceite de oliva y sal, y hornéalos hasta que estén dorados y crujientes.",
+    "Para el aliño, mezcla la mayonesa, el jugo de limón, la mostaza Dijon y la salsa inglesa.",
+    "Agrega el ajo rallado, la pimienta y el queso parmesano rallado. Mezcla hasta obtener una salsa homogénea.",
+    "Lava y seca bien la lechuga romana.",
+    "Mezcla la lechuga con el aliño César hasta que quede bien cubierta.",
+    "Agrega los croutons y los chicken bites calientes.",
+    "Termina con las láminas de queso parmesano y sirve inmediatamente."
+  ],
+  consejos: [
+    "Seca muy bien la lechuga después de lavarla para que el aliño se adhiera mejor.",
+    "El panko produce chicken bites más crujientes que el pan rallado tradicional.",
+    "Agrega los croutons justo antes de servir para que mantengan su textura.",
+    "Si deseas una versión más ligera, cocina el pollo en air fryer en lugar de freírlo."
+  ]
+},
+{
+  nombre: "Empanadas Fritas Chilenas",
+  categoria: "Entrada",
+  tiempo: "3 horas",
+  dificultad: "Alta",
+  porciones: 30,
+  emoji: "🥟",
+  imagen: "",
+  ingredientes: [
+    "Para el pino:",
+    "1 kg de huachalomo",
+    "1 kg de posta rosada",
+    "8 cebollas medianas",
+    "6 huevos cocidos",
+    "1 taza de ají seco entero (idealmente cachocabra)",
+    "2 cucharadas de comino entero",
+    "1 cucharadita de pimienta negra",
+    "1 taza de aceite",
+    "Pasas al gusto",
+    "Sal al gusto",
+    "1 cubo de caldo concentrado de carne",
+    "Para la masa:",
+    "3 kg de harina",
+    "200 g de margarina",
+    "Agua hirviendo",
+    "Para freír:",
+    "1.5 litros de aceite para freír"
+  ],
+  pasos: [
+    "Pica las cebollas en cuadritos pequeños y colócalas a hervir con agua suficiente para cubrirlas junto con 2 cucharadas de azúcar.",
+    "Cocina hasta que estén transparentes y luego escúrrelas bien.",
+    "Pica la carne en cuadritos pequeños.",
+    "En una olla grande sofríe la carne con un poco de aceite, revolviendo ocasionalmente.",
+    "Cocina durante aproximadamente 30 minutos.",
+    "Agrega la sal, el cubo de caldo concentrado, el comino, el ají seco entero y la pimienta.",
+    "Añade la cebolla escurrida mientras la preparación aún esté caliente y mezcla bien.",
+    "Prueba la sazón y ajusta el nivel de sal, comino o picante si fuera necesario.",
+    "Deja enfriar completamente el pino y refrigéralo hasta el día siguiente. Al día siguiente retira el ají de la olla antes de rellenar las empanadas.",
+    "Para la masa, coloca 2.5 kg de harina sobre una mesa y agrega sal moderadamente.",
+    "Haz un hueco en el centro.",
+    "Derrite la margarina y mézclala con aproximadamente ¾ de litro de agua hirviendo.",
+    "Vierte poco a poco el líquido sobre la harina y mezcla inicialmente con una cuchara de palo.",
+    "Cuando la temperatura lo permita, amasa con las manos hasta obtener una masa firme y homogénea.",
+    "Forma cilindros de masa, córtalos en porciones pequeñas y mantenlos cubiertos con un mantel.",
+    "Estira cada porción hasta obtener discos delgados de aproximadamente 20 cm de diámetro.",
+    "Coloca una cucharada de pino en el centro de cada disco.",
+    "Agrega un trozo de huevo cocido y dos pasas.",
+    "Dobla la masa y sella presionando firmemente los bordes para evitar que se salga el relleno.",
+    "Calienta 1.5 litros de aceite en una olla profunda.",
+    "Fríe las empanadas hasta que suban a la superficie y voltéalas inmediatamente.",
+    "Continúa la fritura hasta que estén doradas de manera uniforme.",
+    "Retira y deja escurrir sobre papel absorbente antes de servir."
+  ],
+  consejos: [
+    "El pino debe prepararse el día anterior para que los sabores se concentren y el relleno esté firme.",
+    "No temas si el pino parece picante; al freír las empanadas el picor disminuye considerablemente.",
+    "La masa debe quedar firme y no blanda para soportar bien la fritura.",
+    "Voltea las empanadas apenas suban a la superficie para que se doren uniformemente.",
+    "Puedes congelarlas armadas antes de freír y cocinarlas directamente desde congeladas."
+  ]
+},
+{
+  nombre: "Sopa de Papas Anita",
+  categoria: "Sopa",
+  tiempo: "35 min",
+  dificultad: "Fácil",
+  porciones: 4,
+  emoji: "🥔",
+  imagen: "",
+  ingredientes: [
+    "5 a 6 papas blancas medianas",
+    "3 porros (solo la parte blanca) o 3 cucharadas de cebolla blanca picada",
+    "2 a 3 dientes de ajo picados o triturados",
+    "2 cucharadas de mantequilla",
+    "5 tazas de agua",
+    "Sal al gusto",
+    "3 cucharadas de crema de leche",
+    "Cilantro picado al gusto",
+    "Perejil picado al gusto"
+  ],
+  pasos: [
+    "Derrite la mantequilla en una olla y sofríe los porros picados (o la cebolla blanca) junto con el ajo.",
+    "Agrega las papas blancas peladas y picadas en trozos medianos.",
+    "Sofríe todo junto durante unos minutos.",
+    "Añade las 5 tazas de agua y sal al gusto.",
+    "Deja hervir hasta que las papas estén completamente cocidas.",
+    "Con un tenedor, aplasta parte de las papas dentro de la misma olla para espesar ligeramente la sopa.",
+    "No licúes la preparación; deben quedar trozos de papa visibles.",
+    "Agrega la crema de leche y mezcla suavemente.",
+    "Rectifica la sal si es necesario.",
+    "Sirve caliente y espolvorea cilantro o perejil picado por encima."
+  ],
+  consejos: [
+    "La sopa debe quedar cremosa pero no demasiado espesa.",
+    "No licúes las papas; aplastarlas parcialmente le da la textura tradicional.",
+    "El porro aporta más sabor que la cebolla, pero ambas opciones funcionan muy bien.",
+    "Puedes añadir un poco más de agua si la sopa espesa demasiado durante la cocción."
+  ]
+},
+{
+  nombre: "Calzones Rotos",
+  categoria: "Postre",
+  tiempo: "60 min",
+  dificultad: "Media",
+  porciones: 25,
+  emoji: "🍩",
+  imagen: "",
+  ingredientes: [
+    "1 kg de harina sin polvos de hornear",
+    "150 g de margarina",
+    "½ tarro de leche condensada",
+    "½ taza de azúcar",
+    "1 cucharadita de levadura en polvo",
+    "2 cucharaditas de polvo de hornear",
+    "2 huevos",
+    "1 cucharada de ralladura de limón",
+    "1 pizca de sal",
+    "Agua tibia (si fuera necesario)",
+    "Aceite para freír",
+    "Azúcar flor para espolvorear"
+  ],
+  pasos: [
+    "Coloca la harina sobre la mesa formando un volcán y haz un hueco amplio en el centro.",
+    "Agrega en el centro la margarina, la leche condensada, el azúcar, los huevos, la ralladura de limón y la sal.",
+    "Esparce la levadura en polvo y el polvo de hornear sobre la harina seca.",
+    "Con la mano, comienza uniendo primero los ingredientes húmedos.",
+    "Incorpora poco a poco la harina de los bordes hasta formar una masa homogénea.",
+    "Si la masa queda muy seca, agrega un poco de agua tibia. Si queda muy blanda, añade un poco más de harina.",
+    "Amasa hasta obtener una masa consistente pero suave.",
+    "Divide la masa en 3 o 4 porciones y forma cilindros alargados.",
+    "Estira cada porción hasta obtener una masa medianamente delgada.",
+    "Corta tiras de aproximadamente 4 cm de ancho.",
+    "Realiza un corte en el centro de cada tira y pasa uno de los extremos por el orificio para formar el tradicional calzón roto.",
+    "Calienta abundante aceite en una olla o sartén profunda.",
+    "Fríe los calzones rotos en aceite bien caliente.",
+    "A los pocos segundos de incorporarlos al aceite, voltéalos para asegurar un dorado parejo.",
+    "Retira cuando estén dorados por ambos lados y escúrrelos sobre papel absorbente.",
+    "Espolvorea generosamente con azúcar flor antes de servir."
+  ],
+  consejos: [
+    "La masa debe quedar firme pero no dura para obtener una textura suave por dentro.",
+    "Si el aceite comienza a formar espuma durante la fritura, retírala con una espumadera.",
+    "Es importante girarlos rápidamente al comenzar la fritura para lograr un dorado uniforme.",
+    "Se conservan muy bien durante varios días en un recipiente hermético."
+  ]
+},
+{
+  nombre: "Rollos de Canela",
+  categoria: "Postre",
+  tiempo: "3 horas",
+  dificultad: "Media",
+  porciones: 20,
+  emoji: "🍥",
+  imagen: "images/rollos-canela.jpg",
+  ingredientes: [
+    "10 g de levadura seca",
+    "½ cucharadita de azúcar",
+    "570 g de harina sin preparar",
+    "2 cucharaditas de sal",
+    "2 cucharadas de azúcar rubia",
+    "250 ml de leche fresca",
+    "80 g de mantequilla",
+    "2 huevos",
+    "Harina adicional para amasar",
+    "Para el relleno:",
+    "100 g de mantequilla blanda",
+    "250 g de azúcar rubia",
+    "Canela molida al gusto",
+    "Para el glaseado:",
+    "1 taza de azúcar en polvo",
+    "2 a 3 cucharadas de agua caliente"
+  ],
+  pasos: [
+    "En un recipiente pequeño mezcla la levadura seca con ½ cucharadita de azúcar y un poco de agua tibia.",
+    "Deja reposar durante 5 minutos en un lugar tibio hasta que se active.",
+    "En un bowl grande mezcla la harina, la sal y las 2 cucharadas de azúcar rubia.",
+    "Calienta ligeramente la leche junto con los 80 g de mantequilla hasta que esta se derrita. No debe hervir.",
+    "Deja entibiar la mezcla.",
+    "Agrega la levadura activada, la mezcla de leche y mantequilla, y los huevos.",
+    "Amasa durante aproximadamente 10 minutos hasta obtener una masa suave y elástica.",
+    "Coloca la masa en un bowl enmantequillado, cúbrela y deja reposar durante 1 hora y 30 minutos en un lugar tibio hasta que doble su tamaño.",
+    "Traslada la masa a una superficie enharinada y estírala con un rodillo formando un rectángulo.",
+    "Unta la mantequilla blanda sobre toda la superficie.",
+    "Espolvorea uniformemente el azúcar rubia y la canela molida.",
+    "Enrolla la masa formando un cilindro.",
+    "Corta los rollos del grosor deseado.",
+    "Colócalos en un molde previamente enmantequillado.",
+    "Deja reposar los rollos durante 30 minutos para que vuelvan a crecer.",
+    "Precalienta el horno a 180°C.",
+    "Hornea entre 15 y 20 minutos hasta que estén dorados.",
+    "Gratina durante 5 minutos adicionales si deseas más color en la superficie.",
+    "Mezcla el azúcar en polvo con el agua caliente hasta obtener un glaseado ligero.",
+    "Apenas salgan del horno, pinta los rollos con el glaseado.",
+    "Deja reposar unos minutos y sirve."
+  ],
+  consejos: [
+    "La leche debe estar tibia y nunca caliente para no dañar la levadura.",
+    "Si quieres rollos más grandes, corta porciones más gruesas antes de hornear.",
+    "El segundo reposo de 30 minutos ayuda a que queden más esponjosos.",
+    "Puedes agregar nueces o pasas al relleno para una versión más completa.",
+    "Aplica el glaseado mientras los rollos aún están calientes para obtener un mejor acabado."
+  ]
+},
+{
+  nombre: "Tuco Casero",
+  categoria: "Salsa",
+  tiempo: "2 horas 30 min",
+  dificultad: "Media",
+  porciones: 10,
+  emoji: "🍅",
+  imagen: "",
+  ingredientes: [
+    "1 kg de carne de res picada",
+    "2 kg de tomates",
+    "1 kg de cebolla picada",
+    "1 zanahoria",
+    "3 dientes de ajo picados",
+    "½ taza de vino tinto",
+    "2 hojas de laurel",
+    "1 cucharada de hongos secos molidos o picados",
+    "1 cucharadita de comino",
+    "1 cucharadita de pimienta",
+    "1 cucharada de orégano",
+    "1 cucharada de sibarita",
+    "Sal al gusto",
+    "Aceite vegetal"
+  ],
+  pasos: [
+    "Licúa los tomates y pásalos por un colador para retirar semillas y pieles. Agrega un poco de agua si fuera necesario.",
+    "Licúa la zanahoria junto con parte del tomate colado.",
+    "En una olla grande calienta un poco de aceite y sofríe la cebolla picada hasta que esté transparente.",
+    "Agrega el ajo, el comino, la pimienta, los hongos, el laurel, el orégano, la sal y la sibarita.",
+    "Incorpora la carne picada y cocina hasta que cambie de color.",
+    "Añade el tomate licuado y colado junto con la zanahoria licuada.",
+    "Mezcla bien todos los ingredientes.",
+    "Agrega media taza de vino tinto y vuelve a mezclar.",
+    "Cocina a fuego medio-bajo durante aproximadamente 2 horas, removiendo ocasionalmente.",
+    "Continúa la cocción hasta que gran parte del líquido se haya evaporado y la salsa tenga una consistencia espesa y cremosa.",
+    "Rectifica la sazón antes de servir."
+  ],
+  consejos: [
+    "La zanahoria ayuda a reducir naturalmente la acidez del tomate.",
+    "Mientras más lenta sea la cocción, más intenso será el sabor del tuco.",
+    "La salsa está lista cuando el líquido ya no se separa de la carne y mantiene una textura cremosa.",
+    "Es ideal para acompañar tallarines, ravioles, ñoquis o lasañas.",
+    "Al día siguiente suele tener un sabor aún más concentrado y delicioso."
+  ]
+},
+{
+  nombre: "Masa de Pizza Casera",
+  categoria: "Masas",
+  tiempo: "45 min",
+  dificultad: "Fácil",
+  porciones: 2,
+  emoji: "🍕",
+  imagen: "",
+  ingredientes: [
+    "390 g de harina de trigo todo uso",
+    "240 ml de agua tibia",
+    "7 g de levadura seca",
+    "½ cucharadita de sal",
+    "1 cucharada de aceite de oliva"
+  ],
+  pasos: [
+    "Precalienta el horno a 250°C durante 20 minutos.",
+    "Mezcla 130 g de harina con la levadura.",
+    "Agrega el agua tibia y mezcla hasta integrar.",
+    "Añade el resto de la harina, la sal y el aceite.",
+    "Amasa durante 5 minutos hasta obtener una masa suave y elástica.",
+    "Deja reposar la masa 20 minutos.",
+    "Divide la masa en una pizza gruesa o dos pizzas delgadas.",
+    "Estira la masa formando un círculo de aproximadamente 35 cm de diámetro.",
+    "Coloca sobre papel para hornear y agrega la salsa e ingredientes de tu preferencia.",
+    "Hornea de 5 a 8 minutos o hasta que la base y la superficie estén doradas.",
+    "Sirve inmediatamente."
+  ],
+  consejos: [
+    "El agua debe estar tibia (50-55°C) para activar correctamente la levadura.",
+    "Puedes estirar la masa con rodillo o con las manos.",
+    "Para una pizza más crujiente, utiliza una piedra para pizza o una bandeja previamente caliente.",
+    "Esta receta rinde para 1 pizza gruesa o 2 pizzas delgadas."
+  ]
+},
+
+  ];
+
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const search = document.getElementById('search');
+  const filtersEl = document.getElementById('filters');
+  const overlay = document.getElementById('overlay');
+  const modal = document.getElementById('modal');
+  const modalContent = document.getElementById('modal-content');
+  const countEl = document.getElementById('count');
+
+  let activeCategory = 'Todas';
+
+  function normalize(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function buildFilters() {
+    const cats = ['Todas', ...new Set(recetas.map(r => r.categoria))];
+    filtersEl.innerHTML = '';
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'chip' + (cat === activeCategory ? ' active' : '');
+      btn.textContent = cat;
+      if (cat !== 'Todas') btn.style.setProperty('--chip-color', CATEGORY_COLORS[cat] || '#2D2420');
+      btn.addEventListener('click', () => {
+        activeCategory = cat;
+        buildFilters();
+        render();
+      });
+      filtersEl.appendChild(btn);
+    });
+  }
+
+  function render() {
+    const q = normalize(search.value.trim());
+    const filtered = recetas.filter(r => {
+      const inCategory = activeCategory === 'Todas' || r.categoria === activeCategory;
+      if (!inCategory) return false;
+      if (!q) return true;
+      const haystack = normalize(r.nombre + ' ' + r.ingredientes.join(' '));
+      return haystack.includes(q);
+    });
+
+    filtered.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+
+    grid.innerHTML = '';
+    empty.hidden = filtered.length > 0;
+
+    filtered.forEach((r, i) => {
+      const color = CATEGORY_COLORS[r.categoria] || '#2D2420';
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.tabIndex = 0;
+      card.style.setProperty('--cat-color', color);
+      card.style.setProperty('--i', i);
+      card.innerHTML = `
+        <div class="card-photo">
+          ${r.imagen ? `<img src="${r.imagen}" alt="${r.nombre}">` : r.emoji}
+          <span class="stamp">${r.categoria.slice(0, 3).toUpperCase()}</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">${r.nombre}</h3>
+          <div class="card-meta">
+            <span>⏱ ${r.tiempo}</span>
+            <span>🍽 ${r.porciones} porciones</span>
+            ${r.dificultad ? `<span class="diff-badge" style="--diff-color:${difficultyColor(r.dificultad)}">${r.dificultad}</span>` : ''}
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => openModal(r));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(r); }
+      });
+      grid.appendChild(card);
+    });
+
+    countEl.textContent = recetas.length;
+  }
+
+  function openModal(r) {
+    const color = CATEGORY_COLORS[r.categoria] || '#2D2420';
+    modal.style.setProperty('--cat-color', color);
+    modalContent.innerHTML = `
+      <div class="modal-photo">${r.imagen ? `<img src="${r.imagen}" alt="${r.nombre}">` : r.emoji}</div>
+      <h2>${r.nombre}</h2>
+      <div class="modal-meta">
+        <span>⏱ ${r.tiempo}</span>
+        <span>🍽 ${r.porciones} porciones</span>
+        <span>🏷 ${r.categoria}</span>
+        ${r.dificultad ? `<span class="diff-badge" style="--diff-color:${difficultyColor(r.dificultad)}">${r.dificultad}</span>` : ''}
+      </div>
+      <div class="modal-columns">
+        <div>
+          <h3>Ingredientes</h3>
+          <ul class="ing-list">${r.ingredientes.map(i => i.trim().endsWith(':') ? `<li class="ing-section">${i}</li>` : `<li>${i}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <h3>Preparación</h3>
+          <ol class="steps-list">${r.pasos.map(p => `<li>${p}</li>`).join('')}</ol>
+        </div>
+      </div>
+      ${r.consejos && r.consejos.length ? `
+      <div class="tips-box">
+        <h3>💡 Consejos</h3>
+        <ul>${r.consejos.map(c => `<li>${c}</li>`).join('')}</ul>
+      </div>
+      ` : ''}
+    `;
+    overlay.classList.add('active');
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  search.addEventListener('input', render);
+
+  buildFilters();
+  render();
+</script>
+
+
+
+
+
+
+</body></html>
